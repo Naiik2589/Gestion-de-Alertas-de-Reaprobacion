@@ -8,7 +8,7 @@ function onOpen() {
 function crearEventos() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const data = sheet.getDataRange().getValues();
-  const calendar = CalendarApp.getCalendarById("c_96d98b85816d17f8d577f1b8685ebfe217bd91f0cc71525ef5bbae83560685c4@group.calendar.google.com") //Calendario
+  const calendar = CalendarApp.getCalendarById("c_96d98b85816d17f8d577f1b8685ebfe217bd91f0cc71525ef5bbae83560685c4@group.calendar.google.com"); // Calendario
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0); // Establecer la hora a 00:00:00 para comparar solo la fecha
 
@@ -111,7 +111,13 @@ function crearEventos() {
           const fechaAlerta = data[i][7 + j * 4]; // Columnas H, L, P, T, X
           Logger.log(`Buscando evento para Alerta ${j + 1} en fecha: ${fechaAlerta}`);
 
-          const eventos = calendar.getEvents(new Date(fechaAlerta), new Date(fechaAlerta));
+          // Buscar eventos en un rango de un día completo
+          const fechaInicioBusqueda = new Date(fechaAlerta);
+          fechaInicioBusqueda.setHours(0, 0, 0, 0); // Inicio del día
+          const fechaFinBusqueda = new Date(fechaAlerta);
+          fechaFinBusqueda.setHours(23, 59, 59, 999); // Fin del día
+
+          const eventos = calendar.getEvents(fechaInicioBusqueda, fechaFinBusqueda);
           eventos.forEach(evento => {
             if (evento.getTitle().includes(`Alerta ${j + 1} - ${data[i][0]}`)) {
               Logger.log(`Evento encontrado: ${evento.getTitle()} - ${evento.getStartTime()}`);
@@ -133,6 +139,7 @@ function crearEventos() {
       }
     }
   }
+
   Logger.log("Proceso completado.");
 
   // Mostrar una alerta al usuario
