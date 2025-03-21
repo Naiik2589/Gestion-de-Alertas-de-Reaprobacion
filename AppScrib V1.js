@@ -1,3 +1,10 @@
+function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+  ui.createMenu('Acciones') // Nombre del menú
+    .addItem('Ejecutar Script', 'crearEventos') // Nombre del botón y función a ejecutar
+    .addToUi();
+}
+
 function crearEventos() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const data = sheet.getDataRange().getValues();
@@ -126,8 +133,11 @@ function crearEventos() {
       }
     }
   }
-
   Logger.log("Proceso completado.");
+
+  // Mostrar una alerta al usuario
+  const ui = SpreadsheetApp.getUi();
+  ui.alert("Proceso completado", "El script ha finalizado correctamente.", ui.ButtonSet.OK);
 }
 
 // Función para formatear fechas en formato "21 de Enero de 2025"
